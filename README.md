@@ -12,6 +12,7 @@ pixi run build                    # configure + build
 pixi run build --target reflexxes # build a single target
 pixi run test
 pixi run example
+pixi run -e benchmark bench      # Google Benchmark vs. Ruckig (built from source)
 ```
 
 Use from another CMake project:

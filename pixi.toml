@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Reflexxes Type IV online trajectory generation (extracted from intrinsic-core)"
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
+preview = ["pixi-build"]
 
 [dependencies]
 cmake = ">=3.22"
@@ -25,3 +26,16 @@ cxx-compiler = "*"
 # macOS 27 SDK (<complex>: NAN/INFINITY undeclared). Use clang 23 directly.
 [target.osx-arm64.dependencies]
 clangxx_osx-arm64 = ">=23"
+
+# Google Benchmark comparison against Ruckig: `pixi run -e benchmark bench`.
+[feature.benchmark.dependencies]
+benchmark = "*"
+ruckig = { path = "pixi/ruckig" }
+
+[feature.benchmark.tasks]
+bench-configure = "cmake -S . -B build-benchmark -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DREFLEXXES_BUILD_BENCHMARKS=ON"
+bench-build = { cmd = "cmake --build build-benchmark", depends-on = ["bench-configure"] }
+bench = { cmd = "./build-benchmark/reflexxes_ruckig_benchmark", depends-on = ["bench-build"] }
+
+[environments]
+benchmark = ["benchmark"]

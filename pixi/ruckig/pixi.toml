@@ -1,0 +1,17 @@
+# Builds upstream Ruckig (not packaged on conda-forge) as a pixi source package.
+[package]
+name = "ruckig"
+version = "0.19.4"
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" }
+source = { git = "https://github.com/pantor/ruckig.git", tag = "v0.19.4" }
+
+[package.build.config]
+extra-args = [
+  "-DBUILD_EXAMPLES=OFF",
+  "-DBUILD_TESTS=OFF",
+  "-DBUILD_PYTHON_MODULE=OFF",
+  "-DBUILD_CLOUD_CLIENT=OFF",
+  "-DBUILD_SHARED_LIBS=ON",
+]

@@ -9,6 +9,7 @@ endif()
 
 option(REFLEXXES_BUILD_EXAMPLES "Build examples" ON)
 option(REFLEXXES_BUILD_TESTS "Build tests" ON)
+option(REFLEXXES_BUILD_BENCHMARKS "Build Google Benchmark comparison against Ruckig" OFF)
 
 find_package(absl REQUIRED CONFIG)
 
@@ -70,6 +71,16 @@ if(REFLEXXES_BUILD_TESTS)
   if(REFLEXXES_BUILD_EXAMPLES)
     add_test(NAME position_example COMMAND reflexxes_position_example)
   endif()
+endif()
+
+if(REFLEXXES_BUILD_BENCHMARKS)
+  find_package(benchmark REQUIRED CONFIG)
+  find_package(ruckig REQUIRED CONFIG)
+
+  add_executable(reflexxes_ruckig_benchmark benchmarks/ruckig_comparison.cc)
+  target_link_libraries(reflexxes_ruckig_benchmark PRIVATE
+    reflexxes::reflexxes ruckig::ruckig benchmark::benchmark)
+  set_target_properties(reflexxes_ruckig_benchmark PROPERTIES CXX_EXTENSIONS OFF)
 endif()
 
 # Install
