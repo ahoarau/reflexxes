@@ -1,0 +1,27 @@
+[workspace]
+name = "reflexxes"
+version = "0.1.0"
+description = "Reflexxes Type IV online trajectory generation (extracted from intrinsic-core)"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
+
+[dependencies]
+cmake = ">=3.22"
+ninja = "*"
+libabseil = "*"
+
+[tasks]
+configure = "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX"
+build = { cmd = "cmake --build build", depends-on = ["configure"] }
+test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = ["build"] }
+example = { cmd = "./build/reflexxes_position_example", depends-on = ["build"] }
+install = { cmd = "cmake --install build", depends-on = ["build"] }
+clean = "rm -rf build"
+
+[target.linux.dependencies]
+cxx-compiler = "*"
+
+# cxx-compiler pins clang 21 on macOS, whose libc++ headers break on the
+# macOS 27 SDK (<complex>: NAN/INFINITY undeclared). Use clang 23 directly.
+[target.osx-arm64.dependencies]
+clangxx_osx-arm64 = ">=23"
